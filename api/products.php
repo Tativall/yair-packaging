@@ -145,7 +145,7 @@ switch ($action) {
         if (empty($_SESSION['admin_logged'])) jsonResponse(['error' => 'No autorizado'], 401);
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $allowed = ['nombre_negocio','slogan','whatsapp','email_contacto','email_pedidos','direccion','horario'];
-        $stmt = $db->prepare("INSERT INTO settings (clave, valor) VALUES (?, ?) ON DUPLICATE KEY UPDATE valor = VALUES(valor)");
+        $stmt = $db->prepare("INSERT OR REPLACE INTO settings (clave, valor) VALUES (?, ?)");
         foreach ($allowed as $k) {
             if (isset($input[$k])) $stmt->execute([$k, trim($input[$k])]);
         }
@@ -158,7 +158,7 @@ switch ($action) {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $pass  = trim($input['password'] ?? '');
         if (strlen($pass) < 6) jsonResponse(['error' => 'La contraseña debe tener al menos 6 caracteres'], 400);
-        $stmt  = $db->prepare("INSERT INTO settings (clave, valor) VALUES ('admin_password', ?) ON DUPLICATE KEY UPDATE valor = VALUES(valor)");
+        $stmt  = $db->prepare("INSERT OR REPLACE INTO settings (clave, valor) VALUES ('admin_password', ?)");
         $stmt->execute([password_hash($pass, PASSWORD_DEFAULT)]);
         jsonResponse(['success' => true]);
         break;
