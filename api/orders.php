@@ -79,7 +79,7 @@ switch ($action) {
     case 'list':
         if (empty($_SESSION['admin_logged'])) jsonResponse(['error' => 'No autorizado'], 401);
         $stmt = $db->query("SELECT id, codigo, nombre, telefono, email, empresa, producto_nombre, cantidad, medida, notas, via, estado,
-                                   DATE_FORMAT(created_at, '%d/%m/%Y %H:%i') as fecha
+                                   strftime('%d/%m/%Y %H:%M', created_at) as fecha
                             FROM pedidos ORDER BY created_at DESC");
         jsonResponse(['success' => true, 'orders' => $stmt->fetchAll()]);
         break;
@@ -91,10 +91,10 @@ switch ($action) {
         $stats['total_pedidos']  = $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn();
         $stats['pedidos_nuevos'] = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado = 'nuevo'")->fetchColumn();
         $stats['total_productos']= $db->query("SELECT COUNT(*) FROM productos WHERE activo = 1")->fetchColumn();
-        $stats['pedidos_hoy']    = $db->query("SELECT COUNT(*) FROM pedidos WHERE DATE(created_at) = CURDATE()")->fetchColumn();
+        $stats['pedidos_hoy']    = $db->query("SELECT COUNT(*) FROM pedidos WHERE DATE(created_at) = date('now')")->fetchColumn();
 
         // Últimos 5
-        $stmt = $db->query("SELECT codigo, nombre, producto_nombre, estado, DATE_FORMAT(created_at,'%d/%m %H:%i') as fecha
+        $stmt = $db->query("SELECT codigo, nombre, producto_nombre, estado, strftime('%d/%m %H:%M', created_at) as fecha
                             FROM pedidos ORDER BY created_at DESC LIMIT 5");
         $stats['recientes'] = $stmt->fetchAll();
 
