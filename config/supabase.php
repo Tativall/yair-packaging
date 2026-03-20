@@ -4,8 +4,8 @@
 // Reemplazá los valores con los de tu proyecto
 // Settings → API en el dashboard de Supabase
 // =====================================================
-define('SUPABASE_URL',    'https://TU_PROJECT_ID.supabase.co');
-define('SUPABASE_KEY',    'TU_ANON_KEY');
+define('SUPABASE_URL',    'https://xgseyvuxkyrardbtewrd.supabase.co');
+define('SUPABASE_KEY',    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhnc2V5dnV4a3lyYXJkYnRld3JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDcyMTQsImV4cCI6MjA4OTU4MzIxNH0.JyXDYnMhmOnW8g4-Gr-FWdjt0q658FaTxiMHWTkALTk');
 define('SUPABASE_BUCKET', 'productos');
 define('AUTH_COOKIE',     'yair_admin_auth');
 define('AUTH_SECRET',     'yair2025secret_xK9mP');
