@@ -1279,3 +1279,145 @@ footer span {
         gap: 1rem;
     }
     
+    .hero {
+        padding: 2rem 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-stats {
+        gap: 1rem;
+    }
+    
+    .hero-stat strong {
+        font-size: 1.4rem;
+    }
+    
+    .catalog-wrap {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .cat-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .contact-strip {
+        padding: 1.25rem;
+    }
+    
+    .contact-strip h2 {
+        font-size: 1.1rem;
+    }
+    
+    .prod-grid-admin {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.8rem;
+    }
+    
+    .prod-card-img {
+        height: 110px;
+        font-size: 2rem;
+    }
+    
+    .prod-card-name {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    
+    .product-img {
+        height: 130px;
+    }
+    
+    .product-name {
+        font-size: 0.85rem;
+    }
+    
+    .product-desc {
+        font-size: 0.7rem;
+    }
+    
+    .price {
+        font-size: 0.95rem;
+    }
+    
+    .modal {
+        padding: 1.25rem;
+    }
+    
+    .topbar {
+        padding: 0.5rem 1rem;
+    }
+    
+    .topbar-logo {
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .btn-lg {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .hero-stats {
+        gap: 1rem;
+    }
+    
+    .hero-stat strong {
+        font-size: 1.2rem;
+    }
+    
+    .hero-stat span {
+        font-size: 0.6rem;
+    }
+    
+    .chip {
+        padding: 5px 12px;
+        font-size: 0.7rem;
+    }
+    
+    .cat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .product-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-badge {
+        font-size: 0.6rem;
+    }
+    
+    .prod-grid-admin {
+        grid-template-columns: 1fr 1fr;
+    }
+}
