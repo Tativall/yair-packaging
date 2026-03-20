@@ -30,7 +30,7 @@ switch ($action) {
 
         $rows = supabase('GET','settings?clave=in.(whatsapp,email_pedidos,nombre_negocio)&select=clave,valor');
         $s=[]; foreach($rows as $r) $s[$r['clave']]=$r['valor'];
-        $wa=$s['whatsapp']??'595981000000'; $em=$s['email_pedidos']??''; $biz=$s['nombre_negocio']??'Yair Packaging';
+        $wa=$s['whatsapp']??'595986537162'; $em=$s['email_pedidos']??''; $biz=$s['nombre_negocio']??'Yair Packaging';
 
         $msg = "*Nuevo pedido — {$biz}*\n\nCódigo: {$codigo}\nCliente: {$nombre}\nTeléfono: {$telefono}";
         if (!empty($input['empresa']))  $msg .= "\nEmpresa: ".$input['empresa'];
