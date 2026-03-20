@@ -1,0 +1,9 @@
+=== YAIR PACKAGING — Archivos a subir a GitHub ===
+
+Subí cada archivo a la carpeta correcta en GitHub:
+
+  assets/css/style.css  → Reemplaza assets/css/style.css  (Verde Celestial)
+  admin/categorias.php  → Archivo NUEVO en carpeta admin/
+  api/categorias.php    → Archivo NUEVO en carpeta api/
+  admin/productos.php   → Reemplaza admin/productos.php
+  index.php             → Reemplaza index.php
