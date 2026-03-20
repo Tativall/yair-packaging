@@ -2,30 +2,15 @@
 // YAIR PACKAGING — catalog.js
 // =====================================================
 
-// Base URL detectada automáticamente — funciona con /catalogo o /index.php
-const BASE = (() => {
-    const p = window.location.pathname;
-    // Si estamos en /catalogo o en la raíz, la API está en /api/
-    // Si estamos en una subcarpeta, ajustar
-    const parts = p.split('/').filter(Boolean);
-    // Encontrar la raíz del proyecto
-    if (parts.length === 0) return '';
-    // Si el último segmento es index.php o catalogo, subir un nivel
-    const last = parts[parts.length - 1];
-    if (last === 'index.php' || last === 'catalogo' || last === 'catalogo.php' || last === '') {
-        return parts.slice(0, -1).join('/') ? '/' + parts.slice(0, -1).join('/') : '';
-    }
-    return '/' + parts.join('/');
-})();
-
-const API = (path) => `${BASE}/${path}`.replace(/\/+/g, '/');
+// Rutas absolutas — funcionan en Railway y hosting normal
+const API = (path) => '/' + path.replace(/^\//, '');
 
 let allProducts = [];
 let currentFilter = 'all';
 
 async function loadProducts() {
     try {
-        const res  = await fetch(API('api/products.php?action=list&active=1'));
+        const res  = await fetch('/api/products.php?action=list&active=1');
         const data = await res.json();
         if (data.success) {
             allProducts = data.products;
@@ -34,9 +19,8 @@ async function loadProducts() {
             renderCatalog();
         }
     } catch (e) {
-        console.error('Error cargando productos:', e);
         document.getElementById('catalog-content').innerHTML =
-            '<div style="text-align:center;padding:3rem;color:var(--muted)">Error cargando productos. Verificá la conexión.</div>';
+            '<div style="text-align:center;padding:3rem;color:var(--muted)">Error cargando productos.</div>';
     }
 }
 
@@ -79,15 +63,14 @@ function renderCatalog() {
             </div>
         </div>`;
     });
-
     container.innerHTML = html;
 }
 
 function renderProductCard(p, bgColor) {
-    const sizes    = p.medidas ? p.medidas.split(',').map(s => `<span class="size-tag">${s.trim()}</span>`).join('') : '';
-    const badgeMap = { popular:'Popular', new:'Nuevo', oferta:'Oferta' };
+    const sizes     = p.medidas ? p.medidas.split(',').map(s => `<span class="size-tag">${s.trim()}</span>`).join('') : '';
+    const badgeMap  = { popular:'Popular', new:'Nuevo', oferta:'Oferta' };
     const badgeHtml = p.etiqueta ? `<span class="prod-badge badge-${p.etiqueta}">${badgeMap[p.etiqueta] || p.etiqueta}</span>` : '';
-    const fotoSrc   = p.foto ? API(`assets/uploads/${p.foto}`) : '';
+    const fotoSrc   = p.foto ? `/assets/uploads/${p.foto}` : '';
     const imgHtml   = fotoSrc ? `<img src="${fotoSrc}" alt="${escHtml(p.nombre)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : '';
     const precio    = Number(p.precio || 0).toLocaleString('es-PY');
 
@@ -122,7 +105,7 @@ function filterCat(cat, btn) {
 }
 
 function openOrderModal(productId, productName) {
-    document.getElementById('order-product-id').value  = productId || '';
+    document.getElementById('order-product-id').value   = productId || '';
     document.getElementById('order-product-name').value = productName || '';
     ['order-name','order-phone','order-email','order-company','order-qty','order-size'].forEach(id => {
         document.getElementById(id).value = '';
@@ -158,23 +141,20 @@ async function submitOrder(via) {
     };
 
     try {
-        const btns = document.querySelectorAll('#overlay-order .modal-footer .btn');
-        btns.forEach(b => { b.disabled = true; });
-
-        const res  = await fetch(API('api/orders.php?action=create'), {
+        document.querySelectorAll('#overlay-order .modal-footer .btn').forEach(b => b.disabled = true);
+        const res  = await fetch('/api/orders.php?action=create', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify(payload)
         });
         const data = await res.json();
-
         if (data.success) {
             closeModal('order');
-            showToast('✅ Pedido enviado con éxito. Te contactamos pronto!', 'success');
+            showToast('✅ Pedido enviado. Te contactamos pronto!', 'success');
             if (via === 'whatsapp' && data.whatsapp_url) setTimeout(() => window.open(data.whatsapp_url, '_blank'), 500);
             if (via === 'email'    && data.email_url)    setTimeout(() => window.open(data.email_url,    '_blank'), 500);
         } else {
-            showToast(data.error || 'Error al enviar el pedido', 'error');
+            showToast(data.error || 'Error al enviar', 'error');
         }
     } catch (e) {
         showToast('Error de conexión', 'error');
@@ -210,7 +190,7 @@ function showToast(msg, type = 'success') {
     let wrap = document.getElementById('toast-wrap');
     if (!wrap) {
         wrap = document.createElement('div');
-        wrap.id        = 'toast-wrap';
+        wrap.id = 'toast-wrap';
         wrap.className = 'toast-wrap';
         document.body.appendChild(wrap);
     }
