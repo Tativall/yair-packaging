@@ -7,7 +7,7 @@
 // PRODUCTOS
 // =====================================================
 async function loadProducts() {
-    const res  = await fetch('../api/products.php?action=list');
+    const res  = await fetch('/api/products.php?action=list');
     const data = await res.json();
     if (data.success) renderProductTable(data.products);
 }
@@ -74,7 +74,7 @@ async function openProductModal(id) {
     document.getElementById('prod-photo-current').value = '';
 
     if (isEdit) {
-        const res  = await fetch(`../api/products.php?action=get&id=${id}`);
+        const res  = await fetch(`/api/products.php?action=get&id=${id}`);
         const data = await res.json();
         if (data.success) {
             const p = data.product;
@@ -89,7 +89,7 @@ async function openProductModal(id) {
             document.getElementById('prod-photo-current').value = p.foto || '';
             if (p.foto) {
                 const prev = document.getElementById('prod-photo-preview');
-                prev.src = `../assets/uploads/${p.foto}`;
+                prev.src = `/assets/uploads/${p.foto}`;
                 prev.style.display = 'block';
             }
         }
@@ -135,7 +135,7 @@ async function saveProduct() {
     if (photoFile) formData.append('foto', photoFile);
 
     try {
-        const res  = await fetch('../api/products.php', { method: 'POST', body: formData });
+        const res  = await fetch('/api/products.php', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.success) {
             closeModal('product');
@@ -153,7 +153,7 @@ async function saveProduct() {
 // Eliminar producto
 async function deleteProduct(id, nombre) {
     if (!confirm(`¿Eliminás el producto "${nombre}"?`)) return;
-    const res  = await fetch(`../api/products.php?action=delete&id=${id}`, { method: 'DELETE' });
+    const res  = await fetch(`/api/products.php?action=delete&id=${id}`, { method: 'DELETE' });
     const data = await res.json();
     if (data.success) {
         showToast('Producto eliminado');
@@ -168,7 +168,7 @@ async function deleteProduct(id, nombre) {
 // PEDIDOS
 // =====================================================
 async function loadOrders() {
-    const res  = await fetch('../api/orders.php?action=list');
+    const res  = await fetch('/api/orders.php?action=list');
     const data = await res.json();
     if (data.success) renderOrders(data.orders);
 }
@@ -228,7 +228,7 @@ function renderOrders(orders) {
 
 async function updateOrderStatus(id, status) {
     if (!status) return;
-    const res  = await fetch('../api/orders.php?action=status', {
+    const res  = await fetch('/api/orders.php?action=status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status })
@@ -240,7 +240,7 @@ async function updateOrderStatus(id, status) {
 
 async function deleteOrder(id) {
     if (!confirm('¿Eliminás este pedido?')) return;
-    const res  = await fetch(`../api/orders.php?action=delete&id=${id}`, { method: 'DELETE' });
+    const res  = await fetch(`/api/orders.php?action=delete&id=${id}`, { method: 'DELETE' });
     const data = await res.json();
     if (data.success) { showToast('Pedido eliminado'); loadOrders(); updateDashStats(); }
     else showToast('Error al eliminar', 'error');
@@ -250,7 +250,7 @@ async function deleteOrder(id) {
 // DASHBOARD
 // =====================================================
 async function updateDashStats() {
-    const res  = await fetch('../api/orders.php?action=stats');
+    const res  = await fetch('/api/orders.php?action=stats');
     const data = await res.json();
     if (data.success) {
         const s = data.stats;
@@ -270,7 +270,7 @@ async function updateDashStats() {
 // AJUSTES
 // =====================================================
 async function loadSettings() {
-    const res  = await fetch('../api/products.php?action=settings');
+    const res  = await fetch('/api/products.php?action=settings');
     const data = await res.json();
     if (data.success) {
         const s = data.settings;
@@ -289,7 +289,7 @@ async function saveSettings() {
         if (el) payload[f] = el.value.trim();
     });
 
-    const res  = await fetch('../api/products.php?action=save_settings', {
+    const res  = await fetch('/api/products.php?action=save_settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -305,7 +305,7 @@ async function changePassword() {
     if (p1 !== p2) { showToast('Las contraseñas no coinciden', 'error'); return; }
     if (p1.length < 6) { showToast('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
 
-    const res  = await fetch('../api/products.php?action=change_password', {
+    const res  = await fetch('/api/products.php?action=change_password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: p1 })
