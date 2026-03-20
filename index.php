@@ -30,6 +30,7 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 </style>
 </head>
 <body>
+<div class="catalog-bg">
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -291,5 +292,6 @@ function showToast(msg,type='success'){
 document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')}));
 loadProducts();
 </script>
+</div>
 </body>
 </html>
