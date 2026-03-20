@@ -5,7 +5,7 @@ $settings = [];
 foreach ($rows as $r) $settings[$r['clave']] = $r['valor'];
 $bizName   = $settings['nombre_negocio'] ?? 'Yair Packaging';
 $slogan    = $settings['slogan']         ?? 'Embalajes profesionales para tu negocio';
-$whatsapp  = $settings['whatsapp']       ?? '595986 537162'; 
+$whatsapp  = $settings['whatsapp']       ?? '595986537162'; 
 $direccion = $settings['direccion']      ?? 'Asunción, Paraguay';
 $horario   = $settings['horario']        ?? 'Lun-Vie 8:00-18:00';
 $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
