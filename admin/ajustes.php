@@ -62,14 +62,14 @@ $newOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fe
         <div class="form-group"><label>Eslogan</label><input type="text" id="set-slogan" value="<?= htmlspecialchars($settings['slogan'] ?? '') ?>" /></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>WhatsApp (con código de país)</label><input type="text" id="set-whatsapp" value="<?= htmlspecialchars($settings['whatsapp'] ?? '') ?>" placeholder="595981000000" /></div>
+        <div class="form-group"><label>WhatsApp (con código de país)</label><input type="text" id="set-whatsapp" value="<?= htmlspecialchars($settings['whatsapp'] ?? '') ?>" placeholder="595986537162" /></div>
         <div class="form-group"><label>Email de contacto</label><input type="text" id="set-email_contacto" value="<?= htmlspecialchars($settings['email_contacto'] ?? '') ?>" /></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Email para recibir pedidos</label><input type="text" id="set-email_pedidos" value="<?= htmlspecialchars($settings['email_pedidos'] ?? '') ?>" /></div>
         <div class="form-group"><label>Dirección</label><input type="text" id="set-direccion" value="<?= htmlspecialchars($settings['direccion'] ?? '') ?>" /></div>
       </div>
-      <div class="form-group"><label>Horario de atención</label><input type="text" id="set-horario" value="<?= htmlspecialchars($settings['horario'] ?? '') ?>" placeholder="Lun-Vie 8:00-18:00" /></div>
+      <div class="form-group"><label>Horario de atención</label><input type="text" id="set-horario" value="<?= htmlspecialchars($settings['horario'] ?? '') ?>" placeholder="Lun-Vie 8:00-18:00 / Sab 08:00-13:00" /></div>
       <button class="btn btn-accent" onclick="saveSettings()">💾 Guardar ajustes</button>
     </div>
 
