@@ -1,22 +1,49 @@
 <?php
-// config/database.php — Railway compatible
+// config/database.php — Railway compatible con auth por cookie
 define('ADMIN_USER', 'admin');
 define('ADMIN_PASS', 'admin123');
-define('SITE_URL', '');
+define('AUTH_COOKIE', 'yair_admin_auth');
+define('AUTH_SECRET', 'yair2025secret_xK9mP'); // clave para firmar el token
 
 function startSession() {
-    if (session_status() === PHP_SESSION_NONE) {
-        $tmpDir = '/tmp/sessions';
-        if (!is_dir($tmpDir)) mkdir($tmpDir, 0755, true);
-        session_save_path($tmpDir);
-        session_set_cookie_params([
-            'lifetime' => 86400,
-            'path'     => '/',
-            'secure'   => isset($_SERVER['HTTPS']),
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
-        session_start();
+    // No usamos sessions PHP en Railway — usamos cookies firmadas
+    // Esta función existe para compatibilidad pero no hace nada
+}
+
+function isAdminLoggedIn() {
+    $cookie = $_COOKIE[AUTH_COOKIE] ?? '';
+    if (!$cookie) return false;
+    // Verificar firma: formato "usuario:timestamp:firma"
+    $parts = explode(':', $cookie);
+    if (count($parts) !== 3) return false;
+    [$user, $time, $sig] = $parts;
+    // Token válido por 24 horas
+    if (time() - (int)$time > 86400) return false;
+    $expected = hash_hmac('sha256', $user . ':' . $time, AUTH_SECRET);
+    return $user === ADMIN_USER && hash_equals($expected, $sig);
+}
+
+function loginAdmin() {
+    $time = time();
+    $sig  = hash_hmac('sha256', ADMIN_USER . ':' . $time, AUTH_SECRET);
+    $val  = ADMIN_USER . ':' . $time . ':' . $sig;
+    setcookie(AUTH_COOKIE, $val, [
+        'expires'  => time() + 86400,
+        'path'     => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
+}
+
+function logoutAdmin() {
+    setcookie(AUTH_COOKIE, '', ['expires' => time()-3600, 'path' => '/']);
+}
+
+function requireAdmin() {
+    if (!isAdminLoggedIn()) {
+        header('Location: /admin/login.php');
+        exit;
     }
 }
 
@@ -116,14 +143,6 @@ function seedData($pdo) {
         ['Cinta de Embalaje','Transparente y marrón.',4,12000,'rollo','48mm×90m, 72mm×90m','popular','🟨'],
         ['Fleje Plástico','Para asegurar pallets.',4,45000,'caja','12mm, 16mm, 19mm','','🔗'],
     ] as $p) $s->execute($p);
-}
-
-function requireAdmin() {
-    startSession();
-    if (empty($_SESSION['admin_logged'])) {
-        header('Location: ../admin/login.php');
-        exit;
-    }
 }
 
 function jsonResponse($data, $code = 200) {
