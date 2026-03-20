@@ -1,62 +1,95 @@
 <?php
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 header('Content-Type: application/json; charset=utf-8');
 
-$action=$_GET['action']??'list';
-$db=getDB();
+$action = $_GET['action']??'list';
 
-switch($action){
+switch ($action) {
     case 'create':
-        $input=json_decode(file_get_contents('php://input'),true)??[];
-        $nombre=trim($input['nombre']??''); $telefono=trim($input['telefono']??'');
-        if(!$nombre||!$telefono) jsonResponse(['error'=>'Nombre y teléfono obligatorios'],400);
-        $codigo='ORD-'.strtoupper(substr(uniqid(),-6));
-        $s=$db->prepare("INSERT INTO pedidos (codigo,nombre,telefono,email,empresa,producto_nombre,cantidad,medida,notas,via,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-        $s->execute([$codigo,$nombre,$telefono,trim($input['email']??''),trim($input['empresa']??''),trim($input['producto']??''),trim($input['cantidad']??''),trim($input['medida']??''),trim($input['notas']??''),trim($input['via']??'web'),$_SERVER['REMOTE_ADDR']??'']);
-        $rows=$db->query("SELECT clave,valor FROM settings WHERE clave IN ('whatsapp','email_pedidos','nombre_negocio')")->fetchAll();
-        $s2=[];foreach($rows as $r) $s2[$r['clave']]=$r['valor'];
-        $wa=$s2['whatsapp']??'595981000000'; $em=$s2['email_pedidos']??''; $biz=$s2['nombre_negocio']??'Yair Packaging';
-        $msg="*Nuevo pedido — {$biz}*\n\nCódigo: {$codigo}\nCliente: {$nombre}\nTeléfono: {$telefono}";
-        if(!empty($input['empresa'])) $msg.="\nEmpresa: ".$input['empresa'];
-        $msg.="\n\nProducto: ".($input['producto']??'—')."\nCantidad: ".($input['cantidad']??'—');
-        if(!empty($input['medida'])) $msg.="\nMedida: ".$input['medida'];
-        if(!empty($input['notas']))  $msg.="\nComentarios: ".$input['notas'];
-        $waUrl="https://wa.me/{$wa}?text=".urlencode($msg);
-        $emailUrl='';
-        if($em) $emailUrl="mailto:{$em}?subject=".rawurlencode("Nuevo pedido #{$codigo}")."&body=".rawurlencode("Cliente: {$nombre}\nTeléfono: {$telefono}\nProducto: ".($input['producto']??'—')."\nComentarios: ".($input['notas']??'—'));
+        $input    = json_decode(file_get_contents('php://input'),true)??[];
+        $nombre   = trim($input['nombre']??'');
+        $telefono = trim($input['telefono']??'');
+        if (!$nombre||!$telefono) jsonResponse(['error'=>'Nombre y teléfono obligatorios'],400);
+
+        $codigo = 'ORD-'.strtoupper(substr(uniqid(),-6));
+        $data   = [
+            'codigo'           => $codigo,
+            'nombre'           => $nombre,
+            'telefono'         => $telefono,
+            'email'            => trim($input['email']??''),
+            'empresa'          => trim($input['empresa']??''),
+            'producto_nombre'  => trim($input['producto']??''),
+            'cantidad'         => trim($input['cantidad']??''),
+            'medida'           => trim($input['medida']??''),
+            'notas'            => trim($input['notas']??''),
+            'via'              => trim($input['via']??'web'),
+            'estado'           => 'nuevo',
+            'ip'               => $_SERVER['REMOTE_ADDR']??'',
+        ];
+        supabase('POST','pedidos',$data);
+
+        $rows = supabase('GET','settings?clave=in.(whatsapp,email_pedidos,nombre_negocio)&select=clave,valor');
+        $s=[]; foreach($rows as $r) $s[$r['clave']]=$r['valor'];
+        $wa=$s['whatsapp']??'595981000000'; $em=$s['email_pedidos']??''; $biz=$s['nombre_negocio']??'Yair Packaging';
+
+        $msg = "*Nuevo pedido — {$biz}*\n\nCódigo: {$codigo}\nCliente: {$nombre}\nTeléfono: {$telefono}";
+        if (!empty($input['empresa']))  $msg .= "\nEmpresa: ".$input['empresa'];
+        $msg .= "\n\nProducto: ".($input['producto']??'—')."\nCantidad: ".($input['cantidad']??'—');
+        if (!empty($input['medida'])) $msg .= "\nMedida: ".$input['medida'];
+        if (!empty($input['notas']))  $msg .= "\nComentarios: ".$input['notas'];
+
+        $waUrl = "https://wa.me/{$wa}?text=".urlencode($msg);
+        $emailUrl = $em ? "mailto:{$em}?subject=".rawurlencode("Pedido #{$codigo}")."&body=".rawurlencode($msg) : '';
         jsonResponse(['success'=>true,'codigo'=>$codigo,'whatsapp_url'=>$waUrl,'email_url'=>$emailUrl]);
         break;
 
     case 'list':
-        if(!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
-        $s=$db->query("SELECT id,codigo,nombre,telefono,email,empresa,producto_nombre,cantidad,medida,notas,via,estado,strftime('%d/%m/%Y %H:%M',created_at) as fecha FROM pedidos ORDER BY created_at DESC");
-        jsonResponse(['success'=>true,'orders'=>$s->fetchAll()]);
+        if (!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
+        $rows = supabase('GET','pedidos?select=*&order=created_at.desc');
+        // Formatear fecha
+        $rows = array_map(function($r){
+            if (!empty($r['created_at'])) {
+                $dt = new DateTime($r['created_at']);
+                $r['fecha'] = $dt->format('d/m/Y H:i');
+            }
+            return $r;
+        }, $rows);
+        jsonResponse(['success'=>true,'orders'=>$rows]);
         break;
 
     case 'stats':
-        if(!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
-        $stats=[
-            'total_pedidos'  =>$db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn(),
-            'pedidos_nuevos' =>$db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fetchColumn(),
-            'total_productos'=>$db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn(),
-            'pedidos_hoy'    =>$db->query("SELECT COUNT(*) FROM pedidos WHERE date(created_at)=date('now')")->fetchColumn(),
-            'recientes'      =>$db->query("SELECT codigo,nombre,producto_nombre,estado,strftime('%d/%m %H:%M',created_at) as fecha FROM pedidos ORDER BY created_at DESC LIMIT 5")->fetchAll(),
+        if (!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
+        $todos    = supabase('GET','pedidos?select=id,estado,created_at');
+        $prods    = supabase('GET','productos?select=id&activo=eq.true');
+        $hoy      = date('Y-m-d');
+        $stats = [
+            'total_pedidos'   => count($todos),
+            'pedidos_nuevos'  => count(array_filter($todos, fn($r)=>$r['estado']==='nuevo')),
+            'total_productos' => count($prods),
+            'pedidos_hoy'     => count(array_filter($todos, fn($r)=>str_starts_with($r['created_at']??'',$hoy))),
         ];
+        $recientes = supabase('GET','pedidos?select=codigo,nombre,producto_nombre,estado,created_at&order=created_at.desc&limit=5');
+        $stats['recientes'] = array_map(function($r){
+            if (!empty($r['created_at'])){$dt=new DateTime($r['created_at']);$r['fecha']=$dt->format('d/m H:i');}
+            return $r;
+        }, $recientes);
         jsonResponse(['success'=>true,'stats'=>$stats]);
         break;
 
     case 'status':
-        if(!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
-        $input=json_decode(file_get_contents('php://input'),true)??[];
-        $id=(int)($input['id']??0); $status=trim($input['status']??'');
-        if(!$id||!in_array($status,['nuevo','leido','en_proceso','completado','cancelado'])) jsonResponse(['error'=>'Inválido'],400);
-        $db->prepare("UPDATE pedidos SET estado=? WHERE id=?")->execute([$status,$id]);
+        if (!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
+        $input   = json_decode(file_get_contents('php://input'),true)??[];
+        $id      = (int)($input['id']??0);
+        $status  = trim($input['status']??'');
+        $allowed = ['nuevo','leido','en_proceso','completado','cancelado'];
+        if (!$id||!in_array($status,$allowed)) jsonResponse(['error'=>'Inválido'],400);
+        supabase('PATCH',"pedidos?id=eq.$id",['estado'=>$status]);
         jsonResponse(['success'=>true]);
         break;
 
     case 'delete':
-        if(!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
-        $db->prepare("DELETE FROM pedidos WHERE id=?")->execute([(int)($_GET['id']??0)]);
+        if (!isAdminLoggedIn()) jsonResponse(['error'=>'No autorizado'],401);
+        supabase('DELETE','pedidos?id=eq.'.(int)($_GET['id']??0));
         jsonResponse(['success'=>true]);
         break;
 

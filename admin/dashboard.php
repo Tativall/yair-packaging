@@ -11,11 +11,11 @@ $db = getDB();
 $totalProds  = $db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn();
 $totalOrders = $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn();
 $newOrders   = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fetchColumn();
-$todayOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE DATE(created_at)=date('now')")->fetchColumn();
+$todayOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE DATE(created_at)=CURDATE()")->fetchColumn();
 
 // Últimos 8 pedidos
 $recientes = $db->query("SELECT codigo, nombre, telefono, producto_nombre, estado,
-                                strftime('%d/%m %H:%M', created_at) as fecha
+                                DATE_FORMAT(created_at,'%d/%m %H:%i') as fecha
                          FROM pedidos ORDER BY created_at DESC LIMIT 8")->fetchAll();
 
 $stmtS = $db->query("SELECT clave, valor FROM settings");
