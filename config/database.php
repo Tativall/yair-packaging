@@ -1,10 +1,7 @@
 <?php
 // =====================================================
-// YAIR PACKAGING — Configuración SQLite
-// NO necesita MySQL — funciona en cualquier hosting PHP
+// config/database.php — SQLite (Railway compatible)
 // =====================================================
-
-define('DB_PATH', __DIR__ . '/../data/yair_packaging.db');
 define('ADMIN_USER', 'admin');
 define('ADMIN_PASS', 'admin123');
 define('SITE_URL', '');
@@ -12,17 +9,22 @@ define('SITE_URL', '');
 function getDB() {
     static $pdo = null;
     if ($pdo === null) {
-        $dir = dirname(DB_PATH);
-        if (!is_dir($dir)) mkdir($dir, 0755, true);
+        // Railway: usar /tmp que siempre es escribible
+        // En hosting normal: usar la carpeta data/
+        $dataDir = getenv('RAILWAY_ENVIRONMENT') ? '/tmp' : __DIR__ . '/../data';
+        $dbPath  = $dataDir . '/yair_packaging.db';
+
+        if (!is_dir($dataDir)) mkdir($dataDir, 0755, true);
+
         try {
-            $pdo = new PDO('sqlite:' . DB_PATH);
+            $pdo = new PDO('sqlite:' . $dbPath);
             $pdo->setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
             $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $pdo->exec('PRAGMA journal_mode=WAL');
             $pdo->exec('PRAGMA foreign_keys=ON');
             initDB($pdo);
         } catch (PDOException $e) {
-            die(json_encode(['error' => 'Error de base de datos: ' . $e->getMessage()]));
+            die(json_encode(['error' => 'Error BD: ' . $e->getMessage()]));
         }
     }
     return $pdo;
@@ -99,16 +101,16 @@ function seedData($pdo) {
 
     $prods = [
         ['Caja Corrugada Simple','Ideal para mudanzas, envíos y almacenamiento general.',1,8500,'unid','30×20×20, 40×30×30, 60×40×40, A medida','popular','📦'],
-        ['Caja Doble Pared','Mayor resistencia para cargas pesadas. Exportación y equipos.',1,18000,'unid','50×40×40, 80×60×60, A medida','','🗂️'],
+        ['Caja Doble Pared','Mayor resistencia para cargas pesadas.',1,18000,'unid','50×40×40, 80×60×60, A medida','','🗂️'],
         ['Caja para E-commerce','Diseñada para envíos. Cierre seguro, sin cinta.',1,7000,'unid','Pequeño, Mediano, Grande','popular','📬'],
         ['Plancha de Cartón','Para separadores, protección y armado de embalajes.',1,4000,'unid','1m×1m, 1.2m×0.8m, A medida','oferta','🃏'],
-        ['Film Stretch','Para palletizar y asegurar cargas. Alta extensibilidad.',2,65000,'rollo','45cm×300m, 50cm×500m, Manual/Máquina','popular','🌀'],
+        ['Film Stretch','Para palletizar y asegurar cargas.',2,65000,'rollo','45cm×300m, 50cm×500m','popular','🌀'],
         ['Plástico Burbuja','Protección acolchada para artículos frágiles.',2,85000,'rollo','50cm×50m, 100cm×50m, A medida','','🫧'],
-        ['Bolsas de Polietileno','Transparentes, con cierre, autoadhesivo.',2,3500,'100 unid','10×15cm, 20×30cm, 40×60cm, A medida','oferta','🛍️'],
+        ['Bolsas de Polietileno','Transparentes, con cierre, autoadhesivo.',2,3500,'100 unid','10×15cm, 20×30cm, 40×60cm','oferta','🛍️'],
         ['Plancha de Isopor','Para aislación térmica, construcción y embalaje.',3,15000,'unid','1m×0.5m×1cm, 1m×0.5m×2cm, 1m×0.5m×5cm','popular','⬜'],
         ['Caja Térmica','Para alimentos, medicamentos y productos refrigerados.',3,35000,'unid','5L, 15L, 30L, 50L','','🧊'],
         ['Cinta de Embalaje','Transparente y marrón. Para cierre de cajas.',4,12000,'rollo','48mm×90m, 48mm×150m, 72mm×90m','popular','🟨'],
-        ['Fleje Plástico','Para asegurar pallets y bultos. Manual y máquina.',4,45000,'caja','12mm, 16mm, 19mm','','🔗'],
+        ['Fleje Plástico','Para asegurar pallets y bultos.',4,45000,'caja','12mm, 16mm, 19mm','','🔗'],
     ];
     $s = $pdo->prepare("INSERT INTO productos (nombre,descripcion,categoria_id,precio,unidad,medidas,etiqueta,emoji) VALUES (?,?,?,?,?,?,?,?)");
     foreach ($prods as $p) $s->execute($p);
