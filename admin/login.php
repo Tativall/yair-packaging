@@ -3,6 +3,7 @@
 require_once '../config/database.php';
 startSession();
 
+// Si YA está logueado ir al dashboard
 if (!empty($_SESSION['admin_logged'])) {
     header('Location: dashboard.php');
     exit;
@@ -23,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($ok) {
             $_SESSION['admin_logged'] = true;
             $_SESSION['admin_user']   = $user;
-            header('Location: dashboard.php');
+            // Redirect SIN header Location para evitar loop
+            echo '<script>window.location.href="dashboard.php";</script>';
             exit;
         }
     }
@@ -52,7 +54,7 @@ body{background:var(--primary);display:flex;align-items:center;justify-content:c
   <?php if ($error): ?>
     <div class="alert alert-error">⚠️ <?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
-  <form method="POST" action="login.php">
+  <form method="POST" action="">
     <div class="form-group">
       <label>Usuario</label>
       <input type="text" name="usuario" value="admin" autocomplete="username" required />
@@ -64,7 +66,7 @@ body{background:var(--primary);display:flex;align-items:center;justify-content:c
     <button type="submit" class="btn btn-accent btn-block btn-lg" style="margin-top:.5rem">Ingresar</button>
   </form>
   <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
-    <a href="../index.php" class="btn btn-outline btn-sm">← Ver catálogo público</a>
+    <a href="../index.php" class="btn btn-outline btn-sm">← Ver catálogo</a>
   </div>
 </div>
 </body>
