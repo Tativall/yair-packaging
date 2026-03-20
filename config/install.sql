@@ -70,7 +70,7 @@ ON CONFLICT DO NOTHING;
 INSERT INTO settings (clave, valor) VALUES
 ('nombre_negocio', 'Yair Packaging'),
 ('slogan',         'Embalajes profesionales para tu negocio'),
-('whatsapp',       '595981000000'),
+('whatsapp',       '595986537162'),
 ('email_contacto', 'yairpackaging@gmail.com'),
 ('email_pedidos',  'yairpackaging@gmail.com'),
 ('admin_password', 'admin123'),
