@@ -7,7 +7,7 @@ $bizName   = $settings['nombre_negocio'] ?? 'Yair Packaging';
 $slogan    = $settings['slogan']         ?? 'Embalajes profesionales para tu negocio';
 $whatsapp  = $settings['whatsapp']       ?? '595986537162'; 
 $direccion = $settings['direccion']      ?? 'Asunción, Paraguay';
-$horario   = $settings['horario']        ?? 'Lun-Vie 8:00-18:00';
+$horario   = $settings['horario']        ?? 'Lun-Vie 8:00-18:00 // Sab 08:00-13:00';
 $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 ?>
 <!DOCTYPE html>
