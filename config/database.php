@@ -122,9 +122,9 @@ function seedData($pdo) {
     $s = $pdo->prepare("INSERT OR IGNORE INTO settings (clave,valor) VALUES (?,?)");
     foreach ([
         ['nombre_negocio','Yair Packaging'],['slogan','Embalajes profesionales para tu negocio'],
-        ['whatsapp','595981000000'],['email_contacto','yairpackaging@gmail.com'],
+        ['whatsapp','595986537162'],['email_contacto','yairpackaging@gmail.com'],
         ['email_pedidos','yairpackaging@gmail.com'],['admin_password','admin123'],
-        ['direccion','Asunción, Paraguay'],['horario','Lunes a Viernes 8:00 - 18:00'],
+        ['direccion','Asunción, Paraguay'],['horario','Lunes a Viernes 8:00 - 18:00 / Sab 08:00-13.00'],
     ] as $r) $s->execute($r);
 
     $s = $pdo->prepare("INSERT INTO categorias (nombre,icono,color,orden) VALUES (?,?,?,?)");
