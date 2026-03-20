@@ -43,8 +43,8 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">✨ Catálogo 2025</div>
-    <h1>Embalajes &<br><span>Packaging</span><br>profesional</h1>
+    <div class="hero-badge">✨ Catálogo 2026</div>
+    <h1>Embalajes /<br><span>Packaging</span><br>profesional</h1>
     <p><?= htmlspecialchars($slogan) ?></p>
     <div class="hero-actions">
       <button class="btn btn-accent btn-lg" onclick="openOrderModal(null,'')">📋 Hacer pedido</button>
