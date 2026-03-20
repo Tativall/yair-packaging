@@ -1,9 +1,7 @@
 <?php
-// =====================================================
-// admin/login.php — Login del administrador
-// =====================================================
-session_start();
+// admin/login.php
 require_once '../config/database.php';
+startSession();
 
 if (!empty($_SESSION['admin_logged'])) {
     header('Location: dashboard.php');
@@ -11,19 +9,16 @@ if (!empty($_SESSION['admin_logged'])) {
 }
 
 $error = '';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = trim($_POST['usuario'] ?? '');
     $pass = trim($_POST['password'] ?? '');
 
     if ($user === ADMIN_USER) {
-        $db   = getDB();
-        $stmt = $db->query("SELECT valor FROM settings WHERE clave = 'admin_password'");
-        $row  = $stmt->fetch();
+        $db     = getDB();
+        $stmt   = $db->query("SELECT valor FROM settings WHERE clave = 'admin_password'");
+        $row    = $stmt->fetch();
         $stored = $row ? $row['valor'] : ADMIN_PASS;
-
-        // Verificar: password_hash o texto plano (para instalación inicial)
-        $ok = password_verify($pass, $stored) || $pass === $stored;
+        $ok     = password_verify($pass, $stored) || $pass === $stored;
 
         if ($ok) {
             $_SESSION['admin_logged'] = true;
@@ -54,11 +49,9 @@ body{background:var(--primary);display:flex;align-items:center;justify-content:c
 <div class="login-box">
   <div class="login-logo">YAIR <span>PACKAGING</span></div>
   <div class="login-sub">Panel de administración</div>
-
   <?php if ($error): ?>
     <div class="alert alert-error">⚠️ <?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
-
   <form method="POST" action="login.php">
     <div class="form-group">
       <label>Usuario</label>
@@ -70,7 +63,6 @@ body{background:var(--primary);display:flex;align-items:center;justify-content:c
     </div>
     <button type="submit" class="btn btn-accent btn-block btn-lg" style="margin-top:.5rem">Ingresar</button>
   </form>
-
   <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
     <a href="../index.php" class="btn btn-outline btn-sm">← Ver catálogo público</a>
   </div>
