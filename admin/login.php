@@ -1,10 +1,8 @@
 <?php
-// admin/login.php
 require_once '../config/database.php';
-startSession();
 
-// Si YA está logueado ir al dashboard
-if (!empty($_SESSION['admin_logged'])) {
+// Si ya está autenticado ir al dashboard
+if (isAdminLoggedIn()) {
     header('Location: dashboard.php');
     exit;
 }
@@ -16,16 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user === ADMIN_USER) {
         $db     = getDB();
-        $stmt   = $db->query("SELECT valor FROM settings WHERE clave = 'admin_password'");
-        $row    = $stmt->fetch();
+        $row    = $db->query("SELECT valor FROM settings WHERE clave='admin_password'")->fetch();
         $stored = $row ? $row['valor'] : ADMIN_PASS;
         $ok     = password_verify($pass, $stored) || $pass === $stored;
-
         if ($ok) {
-            $_SESSION['admin_logged'] = true;
-            $_SESSION['admin_user']   = $user;
-            // Redirect SIN header Location para evitar loop
-            echo '<script>window.location.href="dashboard.php";</script>';
+            loginAdmin(); // Setea cookie firmada
+            header('Location: dashboard.php');
             exit;
         }
     }
