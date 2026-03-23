@@ -132,6 +132,7 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
           <option value="popular">⭐ Popular</option>
           <option value="new">🆕 Nuevo</option>
           <option value="oferta">🔥 Oferta</option>
+          <option value="agotado">❌ Agotado</option>
         </select>
       </div>
       <div class="form-group">

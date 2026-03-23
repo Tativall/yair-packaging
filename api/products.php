@@ -40,7 +40,10 @@ switch ($action) {
         $cats = supabase('GET',"categorias?nombre=eq.".urlencode($cat)."&limit=1");
         $catId = $cats[0]['id'] ?? null;
         $foto = '';
-        if (!empty($_FILES['foto']['name'])&&$_FILES['foto']['error']===0) $foto=uploadToSupabase($_FILES['foto']);
+        if (!empty($_FILES['foto']['name'])&&$_FILES['foto']['error']===0) {
+            try { $foto = uploadToSupabase($_FILES['foto']); }
+            catch (Exception $e) { $foto = ''; } // Si falla la foto, continúa sin ella
+        }
         $data = [
             'nombre'       => $nombre,
             'descripcion'  => trim($_POST['descripcion']??''),
@@ -51,8 +54,10 @@ switch ($action) {
             'etiqueta'     => trim($_POST['etiqueta']??''),
             'emoji'        => trim($_POST['emoji']??'📦'),
             'foto'         => $foto,
+            'activo'       => true,
         ];
         $res = supabase('POST','productos',$data);
+        if (empty($res) || isset($res['code'])) jsonResponse(['error'=>'Error al guardar el producto en la base de datos'],500);
         jsonResponse(['success'=>true,'id'=>$res[0]['id']??0,'message'=>'Producto creado']);
         break;
 
@@ -65,8 +70,10 @@ switch ($action) {
         $fotoActual = trim($_POST['foto_actual']??'');
         $foto = $fotoActual;
         if (!empty($_FILES['foto']['name'])&&$_FILES['foto']['error']===0){
-            $foto = uploadToSupabase($_FILES['foto']);
-            if ($fotoActual) deleteFromSupabase($fotoActual);
+            try {
+                $foto = uploadToSupabase($_FILES['foto']);
+                if ($fotoActual) deleteFromSupabase($fotoActual);
+            } catch (Exception $e) { $foto = $fotoActual; } // Si falla, mantiene la foto anterior
         }
         $data = [
             'nombre'       => $nombre,

@@ -244,6 +244,7 @@ h1, h2, h3, h4, .page-title, .section-title, .product-name, .stat-value {
 .badge-popular { background: #e0f0f2; color: #1E646E; }
 .badge-new { background: #f0fdf4; color: #15803d; }
 .badge-oferta { background: #fef2f2; color: #dc2626; }
+.badge-agotado { background: #f3f4f6; color: #6b7280; }
 .badge-nuevo { background: #fef9e7; color: #a16207; }
 .badge-leido { background: #e8f0f8; color: #023459; }
 .badge-proceso { background: #e0f0f2; color: #1E646E; }
@@ -1059,6 +1060,7 @@ tr:hover td {
 .badge-popular-img { background: var(--accent); color: #fff; }
 .badge-new-img { background: var(--green); color: #fff; }
 .badge-oferta-img { background: var(--red); color: #fff; }
+.badge-agotado-img { background: #6b7280; color: #fff; }
 
 .product-body {
     padding: 1rem;
