@@ -159,6 +159,15 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
   </div>
 </div>
 
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
+<script>
+window.addEventListener('scroll',function(){
+  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
+});
+</script>
+
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
   <a href="dashboard.php" class="mobile-nav-item"><span class="icon">📊</span>Panel</a>

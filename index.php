@@ -292,6 +292,14 @@ function showToast(msg,type='success'){
 document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')}));
 loadProducts();
 </script>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
+<script>
+window.addEventListener('scroll',function(){
+  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
+});
+</script>
 </div>
 </body>
 </html>
