@@ -144,10 +144,10 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
     <div class="form-group">
       <label>📷 Foto del producto</label>
       <div class="upload-area" id="upload-area">
-        <input type="file" id="prod-photo-input" accept="image/*" capture="environment" onchange="previewPhoto(event)" />
+        <input type="file" id="prod-photo-input" accept="image/*" onchange="previewPhoto(event)" />
         <div class="upload-icon">📷</div>
-        <div class="upload-text">Tocá para subir foto o sacar una</div>
-        <div class="upload-hint">JPG, PNG, WEBP — máx. 3MB · Funciona con la cámara del celular</div>
+        <div class="upload-text">Tocá para elegir foto</div>
+        <div class="upload-hint">JPG, PNG, WEBP — máx. 3MB · En celular podés elegir galería o cámara</div>
         <img id="prod-photo-preview" class="upload-preview" alt="preview" />
       </div>
       <button type="button" onclick="clearPhoto()" id="btn-clear-photo" style="display:none;margin-top:6px" class="btn btn-outline btn-sm">🗑 Quitar foto</button>

@@ -148,16 +148,31 @@ async function saveCat() {
   if (!nombre) { showToast('El nombre es obligatorio', 'error'); return; }
   const id     = document.getElementById('cat-id').value;
   const payload = {
-    nombre, icono: document.getElementById('cat-icono').value || '📦',
-    color: document.getElementById('cat-color').value, orden: parseInt(document.getElementById('cat-orden').value)||99
+    nombre,
+    icono: document.getElementById('cat-icono').value || '📦',
+    color: document.getElementById('cat-color').value,
+    orden: parseInt(document.getElementById('cat-orden').value)||99
   };
   const action = id ? 'update' : 'create';
-  const res    = await fetch('/api/categorias.php?action='+action+(id?'&id='+id:''), {
-    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
-  });
-  const data = await res.json();
-  if (data.success) { showToast('✅ Categoría guardada'); closeModal('cat'); setTimeout(()=>location.reload(),800); }
-  else showToast(data.error||'Error', 'error');
+  const btn = document.querySelector('#overlay-cat .btn-accent');
+  btn.textContent = 'Guardando...'; btn.disabled = true;
+  try {
+    const res  = await fetch('/api/categorias.php?action='+action+(id?'&id='+id:''), {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✅ Categoría guardada');
+      closeModal('cat');
+      setTimeout(()=>location.reload(), 800);
+    } else {
+      showToast(data.error||'Error al guardar', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  } finally {
+    btn.textContent = '💾 Guardar categoría'; btn.disabled = false;
+  }
 }
 
 async function deleteCat(id, nombre) {
