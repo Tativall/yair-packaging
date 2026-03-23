@@ -2,25 +2,34 @@
 // =====================================================
 // admin/dashboard.php — Panel principal
 // =====================================================
-session_start();
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 requireAdmin();
-$db = getDB();
 
-// Stats rápidas
-$totalProds  = $db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn();
-$totalOrders = $db->query("SELECT COUNT(*) FROM pedidos")->fetchColumn();
-$newOrders   = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fetchColumn();
-$todayOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE DATE(created_at)=CURDATE()")->fetchColumn();
+// Stats rápidas desde Supabase
+$prods       = supabase('GET', 'productos?select=id&activo=eq.true');
+$totalProds  = count($prods);
+
+$allOrders   = supabase('GET', 'pedidos?select=id,estado,created_at');
+$totalOrders = count($allOrders);
+$newOrders   = count(array_filter($allOrders, fn($r) => $r['estado'] === 'nuevo'));
+
+$hoy         = date('Y-m-d');
+$todayOrders = count(array_filter($allOrders, fn($r) => str_starts_with($r['created_at'] ?? '', $hoy)));
 
 // Últimos 8 pedidos
-$recientes = $db->query("SELECT codigo, nombre, telefono, producto_nombre, estado,
-                                DATE_FORMAT(created_at,'%d/%m %H:%i') as fecha
-                         FROM pedidos ORDER BY created_at DESC LIMIT 8")->fetchAll();
+$recientes = supabase('GET', 'pedidos?select=codigo,nombre,telefono,producto_nombre,estado,created_at&order=created_at.desc&limit=8');
+foreach ($recientes as &$o) {
+    if (!empty($o['created_at'])) {
+        $dt = new DateTime($o['created_at']);
+        $o['fecha'] = $dt->format('d/m H:i');
+    }
+}
+unset($o);
 
-$stmtS = $db->query("SELECT clave, valor FROM settings");
+// Nombre del negocio desde Supabase
+$settingsRows = supabase('GET', 'settings?select=clave,valor');
 $settings = [];
-foreach ($stmtS->fetchAll() as $r) $settings[$r['clave']] = $r['valor'];
+foreach ($settingsRows as $r) $settings[$r['clave']] = $r['valor'];
 $bizName = $settings['nombre_negocio'] ?? 'Yair Packaging';
 
 $estadoLabel = ['nuevo'=>'Nuevo','leido'=>'Leído','en_proceso'=>'En proceso','completado'=>'Completado','cancelado'=>'Cancelado'];
@@ -130,7 +139,7 @@ $estadoBadge = ['nuevo'=>'nuevo','leido'=>'leido','en_proceso'=>'proceso','compl
                 <td><strong><?= htmlspecialchars($o['codigo']) ?></strong></td>
                 <td><?= htmlspecialchars($o['nombre']) ?><br><span style="font-size:11px;color:var(--muted)"><?= htmlspecialchars($o['telefono']) ?></span></td>
                 <td><?= htmlspecialchars($o['producto_nombre'] ?? '—') ?></td>
-                <td style="font-size:12px;color:var(--muted)"><?= $o['fecha'] ?></td>
+                <td style="font-size:12px;color:var(--muted)"><?= $o['fecha'] ?? '' ?></td>
                 <td><span class="badge badge-<?= $estadoBadge[$o['estado']] ?? 'nuevo' ?>"><?= $estadoLabel[$o['estado']] ?? $o['estado'] ?></span></td>
                 <td><a href="pedidos.php" class="btn btn-outline btn-sm">Ver</a></td>
               </tr>

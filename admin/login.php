@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 
 // Si ya está autenticado ir al dashboard
 if (isAdminLoggedIn()) {
@@ -13,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass = trim($_POST['password'] ?? '');
 
     if ($user === ADMIN_USER) {
-        $db     = getDB();
-        $row    = $db->query("SELECT valor FROM settings WHERE clave='admin_password'")->fetch();
-        $stored = $row ? $row['valor'] : ADMIN_PASS;
+        // Buscar contraseña en Supabase settings
+        $rows   = supabase('GET', "settings?clave=eq.admin_password&select=valor&limit=1");
+        $stored = $rows[0]['valor'] ?? ADMIN_PASS;
         $ok     = password_verify($pass, $stored) || $pass === $stored;
         if ($ok) {
-            loginAdmin(); // Setea cookie firmada
+            loginAdmin();
             header('Location: dashboard.php');
             exit;
         }

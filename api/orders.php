@@ -8,7 +8,7 @@ switch ($action) {
     case 'create':
         $input    = json_decode(file_get_contents('php://input'),true)??[];
         $nombre   = trim($input['nombre']??'');
-        $telefono = trim($input['telefono']??'');
+        $telefono = preg_replace('/\D/', '', trim($input['telefono']??''));
         if (!$nombre||!$telefono) jsonResponse(['error'=>'Nombre y teléfono obligatorios'],400);
 
         $codigo = 'ORD-'.strtoupper(substr(uniqid(),-6));

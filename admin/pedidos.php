@@ -1,15 +1,13 @@
 <?php
-session_start();
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 requireAdmin();
-$db = getDB();
-$stmtS = $db->query("SELECT clave, valor FROM settings WHERE clave='nombre_negocio'");
-$r = $stmtS->fetch();
-$bizName = $r ? $r['valor'] : 'Yair Packaging';
-$newOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fetchColumn();
+$rows = supabase('GET','settings?clave=eq.nombre_negocio&select=valor&limit=1');
+$bizName = $rows[0]['valor'] ?? 'Yair Packaging';
+$newOrdersRows = supabase('GET','pedidos?estado=eq.nuevo&select=id');
+$newOrders = count($newOrdersRows);
 
 // Marcar como leídos los nuevos al entrar
-$db->query("UPDATE pedidos SET estado='leido' WHERE estado='nuevo'");
+supabase('PATCH','pedidos?estado=eq.nuevo',['estado'=>'leido']);
 ?>
 <!DOCTYPE html>
 <html lang="es">

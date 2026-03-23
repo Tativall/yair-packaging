@@ -1,13 +1,12 @@
 <?php
-session_start();
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 requireAdmin();
-$db = getDB();
-$stmtS = $db->query("SELECT clave, valor FROM settings");
+$rows = supabase('GET','settings?select=clave,valor');
 $settings = [];
-foreach ($stmtS->fetchAll() as $r) $settings[$r['clave']] = $r['valor'];
+foreach ($rows as $r) $settings[$r['clave']] = $r['valor'];
 $bizName   = $settings['nombre_negocio'] ?? 'Yair Packaging';
-$newOrders = $db->query("SELECT COUNT(*) FROM pedidos WHERE estado='nuevo'")->fetchColumn();
+$newOrdersRows = supabase('GET','pedidos?estado=eq.nuevo&select=id');
+$newOrders = count($newOrdersRows);
 ?>
 <!DOCTYPE html>
 <html lang="es">

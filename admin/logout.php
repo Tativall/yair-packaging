@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require_once '../config/supabase.php';
 logoutAdmin();
 header('Location: login.php');
 exit;
