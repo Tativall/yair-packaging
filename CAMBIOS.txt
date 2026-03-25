@@ -1,0 +1,19 @@
+=== CAMBIOS — Menú lateral + Fixes ===
+
+NUEVAS FUNCIONES:
+✅ Menú hamburguesa (☰) en catálogo público
+✅ Panel lateral: Quiénes somos, Horario, WhatsApp, Email, Ubicación, Compartir
+✅ Botón compartir en topbar del catálogo
+✅ Fotos se comprimen automáticamente — cualquier tamaño funciona
+✅ Botón "Ver catálogo" en admin mobile
+✅ Tarjetas blancas en admin mobile
+✅ Fondo galaxia en PC y mobile
+
+SUBIR A GITHUB (arrastrá todo):
+- assets/css/style.css
+- index.php
+- admin/productos.php
+- admin/dashboard.php
+- admin/pedidos.php
+- admin/categorias.php
+- admin/ajustes.php

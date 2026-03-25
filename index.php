@@ -34,11 +34,95 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 
 <!-- TOPBAR -->
 <div class="topbar">
+  <button class="hamburger-btn" onclick="openSidebar()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
   <div class="topbar-logo"><?= htmlspecialchars($bizName) ?></div>
   <div class="topbar-actions">
-    <a href="https://wa.me/<?= htmlspecialchars($whatsapp) ?>" target="_blank" class="btn btn-whatsapp btn-sm">💬 WhatsApp</a>
+    <a href="https://wa.me/<?= htmlspecialchars($whatsapp) ?>" target="_blank" class="btn btn-whatsapp btn-sm">💬</a>
+    <button class="btn btn-ghost btn-sm" onclick="shareCatalog()">📤</button>
   </div>
 </div>
+<!-- ===== MENÚ LATERAL ===== -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="side-menu" id="side-menu">
+  <div class="side-menu-header">
+    <div class="side-menu-logo">
+      <div class="side-logo-icon">YP</div>
+      <div>
+        <div class="side-logo-name"><?= htmlspecialchars($bizName) ?></div>
+        <div class="side-logo-sub">Embalajes profesionales</div>
+      </div>
+    </div>
+    <button class="side-close" onclick="closeSidebar()">✕</button>
+  </div>
+
+  <div class="side-menu-body">
+
+    <!-- Quiénes somos -->
+    <div class="side-section">
+      <div class="side-section-title">🏢 Quiénes somos</div>
+      <p class="side-text">Somos una empresa especializada en embalajes y packaging profesional. Proveemos cartones, plásticos e isopor de calidad industrial para empresas y emprendedores.</p>
+    </div>
+
+    <!-- Horario -->
+    <div class="side-section">
+      <div class="side-section-title">🕐 Horario de atención</div>
+      <div class="side-info-row">
+        <span class="side-info-label">Lunes a Viernes</span>
+        <span class="side-info-val"><?= htmlspecialchars($horario) ?></span>
+      </div>
+      <div class="side-info-row">
+        <span class="side-info-label">Sábados</span>
+        <span class="side-info-val">8:00 - 12:00</span>
+      </div>
+    </div>
+
+    <!-- Contacto -->
+    <div class="side-section">
+      <div class="side-section-title">📞 Contacto</div>
+      <a href="https://wa.me/<?= htmlspecialchars($whatsapp) ?>" target="_blank" class="side-contact-btn side-wa">
+        <span>💬</span>
+        <div>
+          <div class="side-contact-label">WhatsApp</div>
+          <div class="side-contact-val">+<?= htmlspecialchars($whatsapp) ?></div>
+        </div>
+      </a>
+      <a href="mailto:<?= htmlspecialchars($settings['email_contacto'] ?? '') ?>" class="side-contact-btn side-email">
+        <span>📧</span>
+        <div>
+          <div class="side-contact-label">Email</div>
+          <div class="side-contact-val"><?= htmlspecialchars($settings['email_contacto'] ?? '') ?></div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Ubicación -->
+    <div class="side-section">
+      <div class="side-section-title">📍 Ubicación</div>
+      <div class="side-text"><?= htmlspecialchars($direccion) ?></div>
+    </div>
+
+    <!-- Compartir -->
+    <div class="side-section">
+      <div class="side-section-title">🔗 Compartir catálogo</div>
+      <p class="side-text" style="margin-bottom:.75rem">Compartí este catálogo con tus clientes y proveedores.</p>
+      <button class="side-share-btn" onclick="shareCatalog()">
+        <span>📤</span> Compartir catálogo
+      </button>
+      <div class="side-share-url" id="share-url-box" style="display:none">
+        <input type="text" id="share-url-input" readonly />
+        <button onclick="copyUrl()">Copiar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="side-menu-footer">
+    <div style="font-size:.75rem;color:rgba(178,165,159,.5);text-align:center">© 2025 <?= htmlspecialchars($bizName) ?></div>
+  </div>
+</div>
+
 
 <!-- HERO -->
 <div class="hero">
@@ -293,5 +377,36 @@ document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=
 loadProducts();
 </script>
 </div>
+
+<script>
+function openSidebar() {
+  document.getElementById('side-menu').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('side-menu').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function shareCatalog() {
+  const url = window.location.origin + '/catalogo';
+  if (navigator.share) {
+    navigator.share({ title: '<?= htmlspecialchars($bizName) ?>', text: 'Mirá nuestro catálogo de embalajes', url });
+  } else {
+    const box = document.getElementById('share-url-box');
+    document.getElementById('share-url-input').value = url;
+    box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+    closeSidebar();
+  }
+}
+function copyUrl() {
+  const input = document.getElementById('share-url-input');
+  input.select();
+  document.execCommand('copy');
+  showToast('✅ Enlace copiado!');
+}
+</script>
+
 </body>
 </html>

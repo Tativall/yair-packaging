@@ -1470,3 +1470,231 @@ footer span {
   .admin-layout { background: #f0f4f6; }
   body.admin-body { background: #f0f4f6 !important; }
 }
+
+/* =====================================================
+   MENÚ LATERAL — Sidebar catálogo público
+   ===================================================== */
+
+/* Botón hamburguesa */
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 8px;
+  transition: background .2s;
+}
+.hamburger-btn:hover { background: rgba(255,255,255,.1); }
+.hamburger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all .3s;
+}
+
+/* Overlay oscuro */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,10,20,.7);
+  z-index: 400;
+  backdrop-filter: blur(4px);
+}
+.sidebar-overlay.open { display: block; }
+
+/* Menú lateral */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  max-width: 85vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #023459 0%, #012535 40%, #002C2F 100%);
+  z-index: 450;
+  transform: translateX(-100%);
+  transition: transform .3s cubic-bezier(.32,1,.23,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 4px 0 30px rgba(0,0,0,.4);
+}
+.side-menu.open { transform: translateX(0); }
+
+/* Header del menú */
+.side-menu-header {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(42,138,151,.2);
+  background: rgba(0,0,0,.2);
+  flex-shrink: 0;
+}
+.side-menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.side-logo-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1E646E, #2a8a97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: .88rem;
+  color: #fff;
+  letter-spacing: -.5px;
+}
+.side-logo-name {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+}
+.side-logo-sub {
+  font-size: .7rem;
+  color: rgba(178,165,159,.6);
+}
+.side-close {
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: rgba(255,255,255,.7);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.side-close:hover { background: rgba(255,255,255,.2); }
+
+/* Body scrollable */
+.side-menu-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(42,138,151,.3) transparent;
+}
+
+/* Secciones */
+.side-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(42,138,151,.15);
+}
+.side-section:last-child { border-bottom: none; }
+.side-section-title {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #2a8a97;
+  margin-bottom: .65rem;
+}
+.side-text {
+  font-size: .83rem;
+  color: rgba(178,165,159,.8);
+  line-height: 1.6;
+}
+.side-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.side-info-label { font-size: .8rem; color: rgba(178,165,159,.6); }
+.side-info-val   { font-size: .8rem; color: #fff; font-weight: 600; }
+
+/* Botones contacto */
+.side-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: .85rem;
+  border-radius: 10px;
+  text-decoration: none;
+  margin-bottom: .6rem;
+  transition: all .2s;
+  font-size: 1.3rem;
+}
+.side-contact-btn:hover { transform: translateX(4px); }
+.side-wa    { background: rgba(37,211,102,.15); border: 1px solid rgba(37,211,102,.25); }
+.side-email { background: rgba(30,100,110,.2);  border: 1px solid rgba(42,138,151,.25); }
+.side-contact-label { font-size: .68rem; color: rgba(178,165,159,.6); font-weight: 600; text-transform: uppercase; }
+.side-contact-val   { font-size: .85rem; color: #fff; font-weight: 600; }
+
+/* Botón compartir */
+.side-share-btn {
+  width: 100%;
+  padding: .85rem;
+  background: rgba(30,100,110,.35);
+  border: 1px solid rgba(42,138,151,.4);
+  border-radius: 10px;
+  color: #7fc4b8;
+  font-family: var(--font);
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.side-share-btn:hover { background: rgba(30,100,110,.55); }
+
+.side-share-url {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.side-share-url input {
+  flex: 1;
+  padding: 8px 10px;
+  background: rgba(0,0,0,.3);
+  border: 1px solid rgba(42,138,151,.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: .78rem;
+  outline: none;
+}
+.side-share-url button {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Footer */
+.side-menu-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(42,138,151,.15);
+  flex-shrink: 0;
+}
+
+/* Topbar con hamburguesa */
+.topbar { justify-content: space-between; }
+
+/* Desktop — sidebar más ancho */
+@media(min-width:769px) {
+  .side-menu { width: 340px; }
+}
