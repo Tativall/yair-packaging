@@ -30,7 +30,7 @@ supabase('PATCH','pedidos?estado=eq.nuevo',['estado'=>'leido']);
 @media(max-width:700px){.admin-layout{grid-template-columns:1fr}.sidebar{display:none}}
 </style>
 </head>
-<body>
+<body class="admin-body">
 <div class="topbar">
   <a href="../index.php" class="topbar-logo"><?= htmlspecialchars($bizName) ?></a>
   <div class="topbar-actions">
@@ -85,27 +85,5 @@ window.loadOrders = async function() {
 };
 loadOrdersFiltered();
 </script>
-
-
-<!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
-<script>
-window.addEventListener('scroll',function(){
-  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
-});
-</script>
-
-<!-- MOBILE NAV -->
-<nav class="mobile-nav">
-  <a href="dashboard.php" class="mobile-nav-item"><span class="icon">📊</span>Panel</a>
-  <a href="productos.php" class="mobile-nav-item"><span class="icon">📦</span>Productos</a>
-  <a href="categorias.php" class="mobile-nav-item"><span class="icon">🏷️</span>Categorías</a>
-  <a href="pedidos.php" class="mobile-nav-item active">
-    <span class="icon">🛒</span>Pedidos
-    <?php if ($newOrders > 0): ?><span class="mobile-nav-badge"><?= $newOrders ?></span><?php endif; ?>
-  </a>
-  <a href="ajustes.php" class="mobile-nav-item"><span class="icon">⚙️</span>Ajustes</a>
-</nav>
-
 </body>
 </html>

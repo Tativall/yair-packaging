@@ -28,7 +28,7 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
 @media(max-width:500px){.prod-grid-admin{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-<body>
+<body class="admin-body">
 <div class="topbar">
   <a href="../index.php" class="topbar-logo">YAIR <span>PACKAGING</span></a>
   <div class="topbar-actions">
@@ -132,7 +132,6 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
           <option value="popular">⭐ Popular</option>
           <option value="new">🆕 Nuevo</option>
           <option value="oferta">🔥 Oferta</option>
-          <option value="agotado">❌ Agotado</option>
         </select>
       </div>
       <div class="form-group">
@@ -145,10 +144,10 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
     <div class="form-group">
       <label>📷 Foto del producto</label>
       <div class="upload-area" id="upload-area">
-        <input type="file" id="prod-photo-input" accept="image/*" onchange="previewPhoto(event)" />
+        <input type="file" id="prod-photo-input" accept="image/*" capture="environment" onchange="previewPhoto(event)" />
         <div class="upload-icon">📷</div>
-        <div class="upload-text">Tocá para elegir foto</div>
-        <div class="upload-hint">JPG, PNG, WEBP — máx. 3MB · En celular podés elegir galería o cámara</div>
+        <div class="upload-text">Tocá para subir foto o sacar una</div>
+        <div class="upload-hint">JPG, PNG, WEBP — máx. 3MB · Funciona con la cámara del celular</div>
         <img id="prod-photo-preview" class="upload-preview" alt="preview" />
       </div>
       <button type="button" onclick="clearPhoto()" id="btn-clear-photo" style="display:none;margin-top:6px" class="btn btn-outline btn-sm">🗑 Quitar foto</button>
@@ -159,15 +158,6 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
     </div>
   </div>
 </div>
-
-
-<!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
-<script>
-window.addEventListener('scroll',function(){
-  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
-});
-</script>
 
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
@@ -270,12 +260,28 @@ async function openProductModal(id) {
 function previewPhoto(e) {
   const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 3*1024*1024) { showToast('La foto es demasiado grande (máx 3MB)','error'); return; }
   const reader = new FileReader();
   reader.onload = ev => {
-    const prev = document.getElementById('prod-photo-preview');
-    prev.src = ev.target.result; prev.style.display = 'block';
-    document.getElementById('btn-clear-photo').style.display = 'inline-flex';
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1200;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        window._compressedPhoto = new File([blob], 'foto.jpg', {type:'image/jpeg'});
+      }, 'image/jpeg', 0.8);
+      const prev = document.getElementById('prod-photo-preview');
+      prev.src = canvas.toDataURL('image/jpeg', 0.8);
+      prev.style.display = 'block';
+      document.getElementById('btn-clear-photo').style.display = 'inline-flex';
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -285,6 +291,7 @@ function clearPhoto() {
   document.getElementById('prod-photo-input').value = '';
   document.getElementById('prod-photo-current').value = '';
   document.getElementById('btn-clear-photo').style.display = 'none';
+  window._compressedPhoto = null;
 }
 
 async function saveProduct() {
@@ -307,8 +314,9 @@ async function saveProduct() {
   formData.append('emoji', document.getElementById('prod-emoji').value||'📦');
   formData.append('foto_actual', document.getElementById('prod-photo-current').value);
 
-  const photoFile = document.getElementById('prod-photo-input').files[0];
+  const photoFile = window._compressedPhoto || document.getElementById('prod-photo-input').files[0];
   if (photoFile) formData.append('foto', photoFile);
+  window._compressedPhoto = null;
 
   const btn = document.querySelector('#overlay-product .btn-accent');
   btn.textContent = 'Guardando...'; btn.disabled = true;

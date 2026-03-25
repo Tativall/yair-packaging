@@ -25,11 +25,11 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
 <title>Categorías — <?= htmlspecialchars($bizName) ?></title>
 <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
+<body class="admin-body">
 <div class="topbar">
   <a href="../index.php" class="topbar-logo">YAIR <span>PACKAGING</span></a>
   <div class="topbar-actions">
-    <a href="../index.php" class="btn btn-ghost btn-sm" target="_blank">Catálogo</a>
+    <a href="../index.php" class="btn btn-ghost btn-sm" target="_blank">🌐 Catálogo</a>
     <a href="logout.php" class="btn btn-ghost btn-sm">Salir</a>
   </div>
 </div>
@@ -119,15 +119,6 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
   </div>
 </div>
 
-
-<!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
-<script>
-window.addEventListener('scroll',function(){
-  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
-});
-</script>
-
 <!-- MOBILE NAV -->
 <nav class="mobile-nav">
   <a href="dashboard.php" class="mobile-nav-item"><span class="icon">📊</span>Dashboard</a>
@@ -157,31 +148,16 @@ async function saveCat() {
   if (!nombre) { showToast('El nombre es obligatorio', 'error'); return; }
   const id     = document.getElementById('cat-id').value;
   const payload = {
-    nombre,
-    icono: document.getElementById('cat-icono').value || '📦',
-    color: document.getElementById('cat-color').value,
-    orden: parseInt(document.getElementById('cat-orden').value)||99
+    nombre, icono: document.getElementById('cat-icono').value || '📦',
+    color: document.getElementById('cat-color').value, orden: parseInt(document.getElementById('cat-orden').value)||99
   };
   const action = id ? 'update' : 'create';
-  const btn = document.querySelector('#overlay-cat .btn-accent');
-  btn.textContent = 'Guardando...'; btn.disabled = true;
-  try {
-    const res  = await fetch('/api/categorias.php?action='+action+(id?'&id='+id:''), {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast('✅ Categoría guardada');
-      closeModal('cat');
-      setTimeout(()=>location.reload(), 800);
-    } else {
-      showToast(data.error||'Error al guardar', 'error');
-    }
-  } catch(e) {
-    showToast('Error de conexión', 'error');
-  } finally {
-    btn.textContent = '💾 Guardar categoría'; btn.disabled = false;
-  }
+  const res    = await fetch('/api/categorias.php?action='+action+(id?'&id='+id:''), {
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (data.success) { showToast('✅ Categoría guardada'); closeModal('cat'); setTimeout(()=>location.reload(),800); }
+  else showToast(data.error||'Error', 'error');
 }
 
 async function deleteCat(id, nombre) {

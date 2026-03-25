@@ -1,0 +1,15 @@
+=== CAMBIOS v3 ===
+
+1. assets/css/style.css  → Tarjetas blancas en admin mobile + fondo galaxia en PC
+2. admin/productos.php   → Comprime fotos automáticamente (cualquier tamaño funciona)
+3. admin/*.php           → Botón "Ver catálogo" visible en mobile
+4. index.php             → Fondo galaxia en PC y mobile
+
+SUBIR EN GITHUB:
+- assets/css/style.css
+- admin/productos.php
+- admin/dashboard.php
+- admin/pedidos.php
+- admin/categorias.php
+- admin/ajustes.php
+- index.php

@@ -221,12 +221,11 @@ function renderCatalog() {
 
 function renderCard(p) {
   const sizes = p.medidas ? p.medidas.split(',').slice(0,3).map(s=>`<span class="size-tag">${s.trim()}</span>`).join('') : '';
-  const badgeMap = {popular:'Popular',new:'Nuevo',oferta:'Oferta',agotado:'Agotado'};
-  const badge = p.etiqueta ? `<span class="prod-badge badge-${p.etiqueta}-img">${badgeMap[p.etiqueta]||p.etiqueta}</span>` : '';
+  const badgeMap = {popular:'Popular',new:'Nuevo',oferta:'Oferta'};
+  const badge = p.etiqueta ? `<span class="prod-badge badge-${p.etiqueta}-img">${badgeMap[p.etiqueta]}</span>` : '';
   const img   = p.foto ? `<img src="${p.foto}" alt="${esc(p.nombre)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : '';
   const precio = Number(p.precio||0).toLocaleString('es-PY');
-  const agotado = p.etiqueta === 'agotado';
-  return `<div class="product-card" style="${agotado?'opacity:.65;':''}${!agotado?'cursor:pointer':''}" ${!agotado?`onclick="openOrderModal(${p.id},'${esc(p.nombre)}')"`:''}> 
+  return `<div class="product-card" onclick="openOrderModal(${p.id},'${esc(p.nombre)}')">
     <div class="product-img" style="background:${p.cat_color||'#f1f5f9'};position:relative;overflow:hidden">
       ${img}<span class="emoji-fallback" style="${p.foto?'opacity:0':''}">${p.emoji||'📦'}</span>${badge}
     </div>
@@ -237,10 +236,7 @@ function renderCard(p) {
       ${sizes?`<div class="product-sizes">${sizes}</div>`:''}
       <div class="product-footer">
         <div><div class="price-label">Desde</div><div class="price">₲ ${precio} <small>/${p.unidad||'unid'}</small></div></div>
-        ${agotado
-          ? `<button class="btn btn-sm" disabled style="background:#e5e7eb;color:#9ca3af;cursor:not-allowed;border:none">Agotado</button>`
-          : `<button class="btn btn-accent btn-sm" onclick="event.stopPropagation();openOrderModal(${p.id},'${esc(p.nombre)}')">Pedir</button>`
-        }
+        <button class="btn btn-accent btn-sm" onclick="event.stopPropagation();openOrderModal(${p.id},'${esc(p.nombre)}')">Pedir</button>
       </div>
     </div>
   </div>`;
@@ -295,14 +291,6 @@ function showToast(msg,type='success'){
 
 document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')}));
 loadProducts();
-</script>
-
-<!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">&#8679;</button>
-<script>
-window.addEventListener('scroll',function(){
-  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>300);
-});
 </script>
 </div>
 </body>

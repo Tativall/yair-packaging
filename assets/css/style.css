@@ -244,7 +244,6 @@ h1, h2, h3, h4, .page-title, .section-title, .product-name, .stat-value {
 .badge-popular { background: #e0f0f2; color: #1E646E; }
 .badge-new { background: #f0fdf4; color: #15803d; }
 .badge-oferta { background: #fef2f2; color: #dc2626; }
-.badge-agotado { background: #f3f4f6; color: #6b7280; }
 .badge-nuevo { background: #fef9e7; color: #a16207; }
 .badge-leido { background: #e8f0f8; color: #023459; }
 .badge-proceso { background: #e0f0f2; color: #1E646E; }
@@ -1060,7 +1059,6 @@ tr:hover td {
 .badge-popular-img { background: var(--accent); color: #fff; }
 .badge-new-img { background: var(--green); color: #fff; }
 .badge-oferta-img { background: var(--red); color: #fff; }
-.badge-agotado-img { background: #6b7280; color: #fff; }
 
 .product-body {
     padding: 1rem;
@@ -1192,16 +1190,15 @@ footer span {
 /* ===== MOBILE NAV ===== */
 .mobile-nav {
     display: none;
-    background: rgba(1,21,32,.97);
+    background: rgba(1,21,32,.95);
     backdrop-filter: blur(15px);
-    padding: 0.3rem 0.5rem;
+    padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     z-index: 300;
-    border-bottom: 1px solid rgba(42,138,151,.25);
-    box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    border-top: 1px solid rgba(42,138,151,.2);
 }
 
 .mobile-nav-item {
@@ -1252,7 +1249,7 @@ footer span {
 @media (max-width: 900px) {
     .admin-layout {
         grid-template-columns: 1fr;
-        padding-top: 56px;
+        padding-bottom: 70px;
     }
     
     .sidebar {
@@ -1425,32 +1422,51 @@ footer span {
     }
 }
 
-/* ===== SCROLL TO TOP ===== */
-.scroll-top {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    font-size: 1.3rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,.25);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .3s, transform .3s;
-    z-index: 500;
+/* =====================================================
+   FIXES: Tarjetas blancas en mobile + fondo galaxia PC
+   ===================================================== */
+
+/* Forzar tarjetas blancas en admin mobile */
+.admin-content .prod-card-admin,
+.admin-content .cat-card,
+.admin-content .card,
+.admin-content .stat-card,
+.admin-content .order-card {
+  background: #ffffff !important;
+  color: var(--text) !important;
 }
-.scroll-top.visible {
-    opacity: 1;
-    pointer-events: all;
+.admin-content .prod-card-name,
+.admin-content .cat-name,
+.admin-content .card-title,
+.admin-content .stat-value,
+.admin-content .page-title {
+  color: var(--primary) !important;
 }
-.scroll-top:hover {
-    transform: translateY(-3px);
+
+/* Fondo galaxia en PC también (catalog-bg) */
+.catalog-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg,#011520 0%,#022030 30%,#012535 65%,#011a28 100%) !important;
+}
+
+/* Chips filtro en PC — fondo oscuro */
+.filter-chips {
+  background: rgba(1,21,32,.9) !important;
+}
+
+/* Sección títulos visibles en PC sobre fondo oscuro */
+.section-title {
+  color: #ffffff !important;
+}
+.section-sub {
+  color: rgba(178,165,159,.6) !important;
+}
+
+/* Admin content siempre fondo claro */
+.admin-content { background: #f0f4f6 !important; }
+
+/* Mobile nav fondo oscuro elegante */
+@media(max-width:900px){
+  .admin-layout { background: #f0f4f6; }
+  body.admin-body { background: #f0f4f6 !important; }
 }
