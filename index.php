@@ -19,6 +19,7 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 <title><?= htmlspecialchars($bizName) ?> — Catálogo</title>
 <meta name="description" content="<?= htmlspecialchars($slogan) ?>">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/chat.css">
 <style>
 /* Extra catalog styles */
 .filter-chips{display:flex;gap:6px;padding:.75rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-bottom:1px solid var(--border);background:#fff}
@@ -407,6 +408,10 @@ function copyUrl() {
   showToast('✅ Enlace copiado!');
 }
 </script>
+
+<!-- CHAT WIDGET -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/chat-widget.js"></script>
 
 </body>
 </html>

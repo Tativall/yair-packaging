@@ -83,6 +83,8 @@ $estadoBadge = ['nuevo'=>'nuevo','leido'=>'leido','en_proceso'=>'proceso','compl
       <span>🛒</span> Pedidos
       <?php if ($newOrders > 0): ?><span class="sidebar-badge"><?= $newOrders ?></span><?php endif; ?>
     </a>
+    <div class="sidebar-section">Atención</div>
+    <a href="soporte.php" class="sidebar-item"><span>💬</span> Soporte en vivo <span class="sidebar-badge" id="sb-chat-badge" style="display:none">!</span></a>
     <div class="sidebar-section">Configuración</div>
     <a href="ajustes.php" class="sidebar-item"><span>⚙️</span> Ajustes</a>
   </div>
