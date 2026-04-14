@@ -353,3 +353,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function toggleTheme() { const html=document.documentElement; const targetTheme=html.getAttribute("data-theme")==="light"?"dark":"light"; html.setAttribute("data-theme",targetTheme); localStorage.setItem("theme",targetTheme); }

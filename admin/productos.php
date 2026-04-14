@@ -13,25 +13,15 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Productos — <?= htmlspecialchars($bizName) ?></title>
 <link rel="stylesheet" href="../assets/css/style.css">
-<style>
-.prod-card-admin{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s;box-shadow:var(--shadow)}
-.prod-card-admin:hover{box-shadow:var(--shadow-md);border-color:var(--accent)}
-.prod-card-img{width:100%;height:120px;object-fit:cover;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;overflow:hidden}
-.prod-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.prod-card-body{padding:.85rem}
-.prod-card-name{font-weight:700;font-size:.92rem;margin-bottom:3px;line-height:1.3}
-.prod-card-cat{font-size:.7rem;color:var(--muted);font-weight:600;margin-bottom:6px}
-.prod-card-price{font-size:1rem;font-weight:800;color:var(--accent)}
-.prod-card-footer{display:flex;gap:6px;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
-.prod-card-footer .btn{flex:1;font-size:.75rem;padding:7px 8px}
-.prod-grid-admin{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.85rem}
-@media(max-width:500px){.prod-grid-admin{grid-template-columns:repeat(2,1fr)}}
-</style>
+
+  <script>if(localStorage.getItem("theme")==="light") document.documentElement.setAttribute("data-theme","light");</script>
 </head>
 <body class="admin-body">
 <div class="topbar">
+  <button class="hamburger-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menú"><span></span><span></span><span></span></button>
   <a href="../index.php" class="topbar-logo">YAIR <span>PACKAGING</span></a>
   <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Tema">🌓</button>
     <a href="../index.php" class="btn btn-ghost btn-sm" target="_blank">Catálogo</a>
     <a href="logout.php" class="btn btn-ghost btn-sm">Salir</a>
   </div>

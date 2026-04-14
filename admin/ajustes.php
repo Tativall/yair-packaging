@@ -15,24 +15,15 @@ $newOrders = count($newOrdersRows);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ajustes — <?= htmlspecialchars($bizName) ?></title>
 <link rel="stylesheet" href="../assets/css/style.css">
-<style>
-.admin-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 46px)}
-.sidebar{background:var(--primary);padding:1.5rem 0;min-height:100%}
-.sidebar-section{padding:.5rem 1.5rem;font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-top:1rem}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:.7rem 1.5rem;color:rgba(255,255,255,0.65);font-size:.88rem;font-weight:500;text-decoration:none;border-left:3px solid transparent;transition:all .2s}
-.sidebar-item:hover{background:rgba(255,255,255,0.07);color:#fff}
-.sidebar-item.active{background:rgba(232,101,10,.15);color:var(--accent2);border-left-color:var(--accent)}
-.sidebar-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px}
-.admin-content{padding:2rem;overflow-y:auto;background:var(--bg)}
-.page-title{font-family:var(--font-head);font-size:1.8rem;font-weight:700;margin-bottom:.25rem}
-.page-sub{font-size:.85rem;color:var(--muted);margin-bottom:1.75rem}
-@media(max-width:700px){.admin-layout{grid-template-columns:1fr}.sidebar{display:none}}
-</style>
+
+  <script>if(localStorage.getItem("theme")==="light") document.documentElement.setAttribute("data-theme","light");</script>
 </head>
 <body class="admin-body">
 <div class="topbar">
+  <button class="hamburger-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menú"><span></span><span></span><span></span></button>
   <a href="../index.php" class="topbar-logo"><?= htmlspecialchars($bizName) ?></a>
   <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Tema">🌓</button>
     <a href="../index.php" class="btn btn-ghost btn-sm" target="_blank">Ver catálogo</a>
     <a href="logout.php" class="btn btn-ghost btn-sm">Salir</a>
   </div>

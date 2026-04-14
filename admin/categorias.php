@@ -24,11 +24,14 @@ $categorias = supabase('GET','categorias?select=*&order=orden.asc');
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Categorías — <?= htmlspecialchars($bizName) ?></title>
 <link rel="stylesheet" href="../assets/css/style.css">
+  <script>if(localStorage.getItem("theme")==="light") document.documentElement.setAttribute("data-theme","light");</script>
 </head>
 <body class="admin-body">
 <div class="topbar">
+  <button class="hamburger-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menú"><span></span><span></span><span></span></button>
   <a href="../index.php" class="topbar-logo">YAIR <span>PACKAGING</span></a>
   <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Tema">🌓</button>
     <a href="../index.php" class="btn btn-ghost btn-sm" target="_blank">🌐 Catálogo</a>
     <a href="logout.php" class="btn btn-ghost btn-sm">Salir</a>
   </div>

@@ -33,13 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Yair Packaging</title>
 <link rel="stylesheet" href="../assets/css/style.css">
-<style>
-body{background:var(--primary);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
-.login-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.login-logo{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.25rem}
-.login-logo span{color:var(--accent)}
-.login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem}
-</style>
+
+  <script>if(localStorage.getItem("theme")==="light") document.documentElement.setAttribute("data-theme","light");</script>
 </head>
 <body>
 <div class="login-box">

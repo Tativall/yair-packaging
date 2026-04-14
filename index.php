@@ -29,6 +29,7 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
 .empty-state{text-align:center;padding:4rem 1rem;color:var(--muted)}
 .empty-state .big{font-size:3.5rem;margin-bottom:.75rem}
 </style>
+  <script>if(localStorage.getItem("theme")==="light") document.documentElement.setAttribute("data-theme","light");</script>
 </head>
 <body>
 <div class="catalog-bg">
@@ -40,6 +41,7 @@ $totalProds = count(supabase('GET','productos?select=id&activo=eq.true'));
   </button>
   <div class="topbar-logo"><?= htmlspecialchars($bizName) ?></div>
   <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Tema">🌓</button>
     <a href="https://wa.me/<?= htmlspecialchars($whatsapp) ?>" target="_blank" class="btn btn-whatsapp btn-sm">💬</a>
     <button class="btn btn-ghost btn-sm" onclick="shareCatalog()">📤</button>
   </div>
